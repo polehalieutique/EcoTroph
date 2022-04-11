@@ -1,0 +1,14 @@
+export(check.table,create.ETdiagnosis,create.ETmain,create.smooth,read.ecopath.model,saturation,Transpose,E_MSY_0.1,plot_ETdiagnosis_isopleth,convert.list2tab,
+CTSA.catch.input,CTSA.forward)
+
+S3method(plot,Transpose)
+S3method(plot,smooth)
+S3method(plot,ETdiagnosis)
+S3method(plot,ETmain)
+
+importFrom(XML,xmlTreeParse)
+importFrom(XML,xmlRoot)
+importFrom(XML,xmlName)
+importFrom(XML,xmlSApply)
+importFrom(XML,xmlValue)
+

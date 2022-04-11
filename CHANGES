@@ -1,0 +1,64 @@
+Date: 30/08/2013
+Modifications:
+
+*create.ETdiagnosis:
+#previous version:
+range.highTL=abs(as.numeric(names(TL_out[TL_out %in% range(TL_out[TL_out>=(TL_out[lim.high.TL]-.9) & TL_out<=round(TL_out[lim.high.TL]-.2,1)])]))-lim.high.TL)
+#new version:
+tlll=names(TL_out[TL_out>=(TL_out[lim.high.TL]-0.5) & TL_out<=(TL_out[lim.high.TL])])
+range.highTL=as.numeric(c(tlll[1],tlll[length(tlll)]))
+#This enables to have a fixed range of TL classes (range.highTL) accounted for in the log-regression used for high TLs kinetic calculation.
+
+*mf.diagnosis:
+#previous version:
+x[['Kin_MF']][lim.high.TL:n.TL]=sapply(lim.high.TL:n.TL,regPB,x[['Kin_MF']],TL_out,range.highTL)
+x[['Kin_MF_acc']][lim.high.TL:n.TL]=sapply(lim.high.TL:n.TL,regPB.ac,x[['Kin_MF_acc']],TL_out,range.highTL)
+x[['SC2']] <- round((sum(x[['Prod_MF']]) - sum(x[['Prod_MF_TMP']])) * 1E3)
+x[['SC']] <- round(sum(x[['Kin_MF']])/sum(x[['TEMP_Kin']]),4)
+#new version:
+x[['Kin_MF']][(lim.high.TL+1):n.TL]=sapply((lim.high.TL+1):n.TL,regPB,x[['Kin_MF']],TL_out,range.highTL)
+x[['Kin_MF_acc']][(lim.high.TL+1):n.TL]=sapply((lim.high.TL+1):n.TL,regPB.ac,x[['Kin_MF_acc']],TL_out,range.highTL)
+x[['SC2']] <- round((sum(x[['Prod_MF']]) - sum(x[['Prod_MF_TMP']])) * 1E3)
+x[['SC']] <- round(sum(x[['Kin_MF']])/sum(x[['TEMP_Kin']]),3)
+#Regressions for high TLs applied starting at lim.high.TL+1 (as it is calculated using TopDow eq for lim.high.TL), and changes in stab criteria.
+
+*sub.mf:
+#previous version:
+regPB=function(compteur,pb.mf,TL_out,range.highTL){
+  # pas de 0.1 => range.highTL=c(9,2)
+  x. <- TL_out[(compteur - range.highTL[1]):(compteur - range.highTL[2])]
+  y <- log(pb.mf[(compteur - range.highTL[1]):(compteur - range.highTL[2])])
+  reg <- coef(lm(y ~ x.))
+  reg. <- exp(reg[1] + reg[2] * TL_out[compteur])
+  return(reg.)
+}
+regPB.ac=function(compteur,pb.mf.ac,TL_out,range.highTL){
+  x. <- TL_out[(compteur - range.highTL[1]):(compteur - range.highTL[2])]
+  y <- log(pb.mf.ac[(compteur - range.highTL[1]):(compteur - range.highTL[2])])
+  #if(fast){reg <- coef(fastLm(y ~ x.))}else{
+  reg <- coef(lm(y ~ x.))
+  reg.ac<- exp(reg[1] + reg[2] * TL_out[compteur])
+  return(reg.ac)
+}
+#new version:
+regPB=function(compteur,pb.mf,TL_out,range.highTL){
+    # pas de 0.1 => range.highTL=c(9,2)
+    x. <- TL_out[(range.highTL[1]):(range.highTL[2])]
+    y <- log(pb.mf[(range.highTL[1]):(range.highTL[2])])
+    reg <- coef(lm(y ~ x.))
+    reg. <- exp(reg[1] + reg[2] * TL_out[compteur])
+    return(reg.)
+}
+regPB.ac=function(compteur,pb.mf.ac,TL_out,range.highTL){
+    x. <- TL_out[(range.highTL[1]):(range.highTL[2])]
+    y <- log(pb.mf.ac[(range.highTL[1]):(range.highTL[2])])
+    #if(fast){reg <- coef(fastLm(y ~ x.))}else{
+    reg <- coef(lm(y ~ x.))
+    reg.ac<- exp(reg[1] + reg[2] * TL_out[compteur])
+    return(reg.ac)
+}
+#Changes in log-regression used for high TLs kinetic calculation: TL range is fixed (lim.high.TL-0.5/lim.high.TL)
+#as in Excel (but change in the range for good calculation).
+
+*CTSA.forward:
+#Same changes as above: regPB.ctsa, range.highTL, SC (10-3 instead of 10-4), and Kin/Kin_acc for high TLs starting at lim.high.TL +1.
