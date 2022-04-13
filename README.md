@@ -5,4 +5,4 @@ Such an approach, wherein species as such disappear, may be regarded as the ulti
 
 EcoTroph can be used either in association with an existing Ecopath model or as a stand-alone application, especially in data-poor environments. Furthermore the model can be applied directly through the plug-in developed within the EwE software or the R package available in the Download page. This package constitutes an updated version of the ET model (conform to Gascuel et al., 2011). 
 
-# EcoTroph
+

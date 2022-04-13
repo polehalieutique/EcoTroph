@@ -1,11 +1,16 @@
-#--------------------------------------------------------------------------------------------
-# convert.list2tab
-# Convert the list object returned by the create.ETdiagnosis function into data.frame objects
-#--------------------------------------------------------------------------------------------
+#' @title  Check Ecopath table function
+#' @description This function enables the verification of input tables based on EwE data and used in the EcoTroph routine. A template is provided in the example: data(ecopath_guinee).
+#' @param diagn.list is the list object returned by the create.ETdiagnosis function.
+#' @examples
+#' data(ecopath_guinee)
+#' \donttest{Liste=create.ETdiagnosis(create.ETmain(ecopath_guinee))
+#' Tab=convert.list2tab(Liste)
+#' }
+#' @export
 
 convert.list2tab=function(diagn.list){
 
-n.fleet=length(diagn.list[[1]]$Catches) 
+n.fleet=length(diagn.list[[1]]$Catches)
 name.fleet=names(diagn.list[[1]]$Catches)
 TL=names(diagn.list[[1]]$BIOM_MF)
 
@@ -47,7 +52,7 @@ if(n.fleet==1){
     for(i in 1:N){
       #i=1
       xlist=diagn.list[[nam.liste[i]]]
-      Mf=as.numeric(xlist$mf) 
+      Mf=as.numeric(xlist$mf)
       et=c(Mf,xlist[[var[v]]])
       if(i==1){Et=et}else{Et=cbind(Et,et)}
     }
@@ -57,11 +62,11 @@ if(n.fleet==1){
     #colnames(Et)=NULL
     ET_Main_mE[[name.var[v]]]=Et
   }
-  
+
 }else{# n.fleet>1
-  
+
   if(is.null(fleet.of.interest)){
-    
+
     mf=matrix(data=unlist(strsplit(names(diagn.list),'_')),ncol=n.fleet,nrow=length(diagn.list),byrow=T)
     for(i in 1:n.fleet){if(i==1){m.=mf[,1]}else{m.=c(m.,mf[,1])}}
     mf=as.numeric(unique(sort(m.)))
@@ -69,18 +74,18 @@ if(n.fleet==1){
       if(n==1){nm=mf}else{nm=paste(nm,'_',mf,sep='')}
     }
     nm=as.character(nm)
-    
+
     if(length(names(diagn.list)[!names(diagn.list)%in%nm])>length(nm)){ #same.mE=F
 
       ET_Main_mE=list()
-      
+
       for(v in 1:length(var)){
         #v=3
         #print(v)
         for(i in 1:N){
           #i=1
           xlist=diagn.list[[nam.liste[i]]]
-          Mf=as.numeric(xlist$mf) 
+          Mf=as.numeric(xlist$mf)
           et=c(Mf,xlist[[var[v]]])
           if(i==1){Et=et}else{Et=cbind(Et,et)}
         }
@@ -89,12 +94,12 @@ if(n.fleet==1){
         #row.names(Et)=NULL;colnames(Et)=NULL
         ET_Main_mE[[name.var[v]]]=Et
       }
-      
+
    #   for(f in 1:n.fleet){
     #    for(i in 1:N){
     #      #i=1
     #      xlist=diagn.list[[nam.liste[i]]]
-    #      Mf=xlist$mf  
+    #      Mf=xlist$mf
     #      et=c(Mf,xlist$Catches[[name.fleet[f]]])
     #      if(i==1){Et=et}else{Et=cbind(Et,et)}
     #    }
@@ -103,18 +108,18 @@ if(n.fleet==1){
         #row.names(Et)=NULL;colnames(Et)=NULL
     #    ET_Main_mE[[paste('Y_fleet',f,sep='')]]=Et
     #  }
-      
+
     }else{ #same.mE=T
 
       ET_Main_mE=list()
-      
+
       for(v in 1:length(var)){
         #v=3
         #print(v)
         for(i in 1:N){
           #i=1
           xlist=diagn.list[[nam.liste[i]]]
-          Mf=as.numeric(xlist$mf)[1] 
+          Mf=as.numeric(xlist$mf)[1]
           et=c(Mf,xlist[[var[v]]])
           if(i==1){Et=et}else{Et=cbind(Et,et)}
         }
@@ -123,12 +128,12 @@ if(n.fleet==1){
         #row.names(Et)=NULL;colnames(Et)=NULL
         ET_Main_mE[[name.var[v]]]=Et
       }
-      
+
       #for(f in 1:n.fleet){
       #  for(i in 1:N){
           #i=1
       #    xlist=diagn.list[[nam.liste[i]]]
-      #    Mf=xlist$mf[1]  
+      #    Mf=xlist$mf[1]
       #    et=c(Mf,xlist$Catches[[name.fleet[f]]])
       #    if(i==1){Et=et}else{Et=cbind(Et,et)}
       #  }
@@ -136,15 +141,15 @@ if(n.fleet==1){
         #Et=data.frame(Et)
         #row.names(Et)=NULL;colnames(Et)=NULL
     #    ET_Main_mE[[paste('Y_fleet',f,sep='')]]=Et
-     # }   
-      
+     # }
+
     }
   }else{ # !is.null(fleet.of.interest)
-    
+
     mE=matrix(data=unlist(strsplit(nm.interest,'_')),ncol=n.fleet,nrow=length(nm.interest),byrow=T)
     mE=sort(unique(as.numeric(mE)))
     ET_Main_mE=list()
-    
+
     for(v in 1:length(var)){
      # print(v)
       for(i in 1:length(mE)){
@@ -160,7 +165,7 @@ if(n.fleet==1){
       #row.names(Et)=NULL;colnames(Et)=NULL
       ET_Main_mE[[name.var[v]]]=Et
     }
-    
+
   #  for(f in 1:n.fleet){
   #    for(i in 1:length(mE)){
         #i=1
@@ -174,9 +179,9 @@ if(n.fleet==1){
   #    colnames(Et)=NULL
   #    ET_Main_mE[[paste('Y_fleet',f,sep='')]]=Et
   #  }
-    
-  } 
-}   
+
+  }
+}
 
 #-------------------------------------------------------------------------------
 #---------------------------- 2. ET_Main_diagnose ------------------------------
@@ -185,21 +190,21 @@ if(n.fleet==1){
 name.diagnose=names(diagn.list[[1]]$ET_Main_diagnose)
 
 if(n.fleet==1){
-  
+
   var2=c('TOT_B','TOT_B_acc','TOT_P','TOT_P_acc','Y',
          'TL_TOT_B','TL_TOT_B_acc','TL_Y')
-  
+
   name.col2=c('mE',var2)
-  
+
   for(i in 1:N){
     #i=1
     xlist=diagn.list[[nam.liste[i]]]
     MF=xlist$mf
-    
+
     for(v in var2){
-      e.=xlist$ET_Main_diagnose[[v]];if(v==var2[1]){et=e.}else{et=c(et,e.)} 
+      e.=xlist$ET_Main_diagnose[[v]];if(v==var2[1]){et=e.}else{et=c(et,e.)}
     }
-    
+
     et=c(MF,et)
     if(i==1){Et=et}else{Et=rbind(Et,et)}
   }
@@ -208,10 +213,10 @@ if(n.fleet==1){
   row.names(ET_Main_diagnose)=NULL
   ET_Main_diagnose=cbind(colnames(ET_Main_diagnose),t(ET_Main_diagnose))
   #row.names(ET_Main_diagnose)=NULL;colnames(ET_Main_diagnose)=NULL
-  
+
 }else{# n.fleet>1
   if(is.null(fleet.of.interest)){
-    
+
     mf=matrix(data=unlist(strsplit(names(diagn.list),'_')),ncol=n.fleet,nrow=length(diagn.list),byrow=T)
     for(i in 1:n.fleet){if(i==1){m.=mf[,1]}else{m.=c(m.,mf[,1])}}
     mf=as.numeric(unique(sort(m.)))
@@ -219,26 +224,26 @@ if(n.fleet==1){
       if(n==1){nm=mf}else{nm=paste(nm,'_',mf,sep='')}
     }
     nm=as.character(nm)
-    
+
     if(length(names(diagn.list)[!names(diagn.list)%in%nm])>length(nm)){#same.mE=F
       var2=c('TOT_B','TOT_B_acc','TOT_P','TOT_P_acc','Y',
              name.diagnose[substring(name.diagnose,1,2)=='Y_'],
              'TL_TOT_B','TL_TOT_B_acc','TL_Y',
              name.diagnose[substring(name.diagnose,1,5)=='TL_Y_'])
-      
+
       name.col2=c(paste('mE.fleet',1:n.fleet,sep=''),var2)
-      
+
       for(i in 1:N){
         #i=1
         xlist=diagn.list[[nam.liste[i]]]
         MF=xlist$mf
-        
+
         for(v in var2){
-          e.=xlist$ET_Main_diagnose[[v]];if(v==var2[1]){et=e.}else{et=c(et,e.)} 
+          e.=xlist$ET_Main_diagnose[[v]];if(v==var2[1]){et=e.}else{et=c(et,e.)}
         }
-        
+
         for(f in 1:n.fleet){m.=MF[f];if(f==1){Mf=m.}else{Mf=c(Mf,m.)}}
-        
+
         et=c(Mf,et)
         if(i==1){Et=et}else{Et=rbind(Et,et)}
       }
@@ -246,27 +251,27 @@ if(n.fleet==1){
       colnames(ET_Main_diagnose)=name.col2
       row.names(ET_Main_diagnose)=NULL
       ET_Main_diagnose=cbind(colnames(ET_Main_diagnose),t(ET_Main_diagnose))
-      #row.names(ET_Main_diagnose)=NULL;colnames(ET_Main_diagnose)=NULL      
-      
+      #row.names(ET_Main_diagnose)=NULL;colnames(ET_Main_diagnose)=NULL
+
     }else{# same.mE=T
       var2=c('TOT_B','TOT_B_acc','TOT_P','TOT_P_acc','Y',
              name.diagnose[substring(name.diagnose,1,2)=='Y_'],
              'TL_TOT_B','TL_TOT_B_acc','TL_Y',
              name.diagnose[substring(name.diagnose,1,5)=='TL_Y_'])
-      
+
       name.col2=c('mE',var2)
-      
+
       for(i in 1:length(nm)){
         #i=1
         xlist=diagn.list[[nm[i]]]
         MF=xlist$mf
-        
+
         for(v in var2){
-          e.=xlist$ET_Main_diagnose[[v]];if(v==var2[1]){et=e.}else{et=c(et,e.)} 
+          e.=xlist$ET_Main_diagnose[[v]];if(v==var2[1]){et=e.}else{et=c(et,e.)}
         }
-        
+
         #for(f in 1:n.fleet){m.=MF[f];if(f==1){Mf=m.}else{Mf=c(Mf,m.)}}
-        
+
         et=c(mf[i],et)
         if(i==1){Et=et}else{Et=rbind(Et,et)}
       }
@@ -275,19 +280,19 @@ if(n.fleet==1){
       row.names(ET_Main_diagnose)=NULL
       ET_Main_diagnose=cbind(colnames(ET_Main_diagnose),t(ET_Main_diagnose))
       #row.names(ET_Main_diagnose)=NULL;colnames(ET_Main_diagnose)=NULL
-      
-    } 
+
+    }
   }else{#!is.null(fleet.of.interest)
     var2=c('TOT_B','TOT_B_acc','TOT_P','TOT_P_acc','Y',
            name.diagnose[substring(name.diagnose,1,2)=='Y_'],
            'TL_TOT_B','TL_TOT_B_acc','TL_Y',
            name.diagnose[substring(name.diagnose,1,5)=='TL_Y_']
     )
-    
+
     mE=matrix(data=unlist(strsplit(nm.interest,'_')),ncol=n.fleet,nrow=length(nm.interest),byrow=T)
     mE=unique(sort(as.numeric(mE)))
     ET_Main_diagnose=data.frame(matrix(data=NA,ncol=length(mE),nrow=length(var2)))
-    
+
     for(i in 1:length(mE)){
       #i=1
       for(k in 1:n.fleet){if(name.fleet[k]%in%fleet.of.interest){nm.=as.character(mE[i])}else{nm.='1'}
@@ -296,13 +301,13 @@ if(n.fleet==1){
       for(v in var2){
         vv=xlist[[v]];if(v==var2[1]){vv.=vv}else{vv.=c(vv.,vv)}
       }
-      ET_Main_diagnose[,i]=vv. 
+      ET_Main_diagnose[,i]=vv.
     }
-    
+
     ET_Main_diagnose=cbind(c('mE.fleet.of.interest',var2),rbind(mE,ET_Main_diagnose))
     #colnames(ET_Main_diagnose)=NULL;row.names(ET_Main_diagnose)=NULL
   }
-}    
+}
 tab=ET_Main_mE
 tab[['ET_Main_diagnose']]=data.frame(ET_Main_diagnose)
 return(tab)

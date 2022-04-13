@@ -1,3 +1,23 @@
+#'  This function enables the display of the principle plots resulting from the create.ETmain function: Biomass Trophic Spectra, Accessible Biomass Trophic Spectra, Catch by fleet Trophic spectra, Total Catch Trophic Spectra and other summary plots.
+#' @param x is the list of tables returned by the create.ETmain function.
+#' @param scale1 defines the scale of the Biomass plots y-axis: can be log or not.
+#' @param scale2 defines the scale of the Accessible Biomass plots y-axis: can be log or not.
+#' @param scale3 defines the scale of the Catch by fleet plots y-axis: can be log or not.
+#' @param legend.cex defines the value of the cex for the legend.
+#' @param ask default value is interactive. Parameter used to enable the user to control the display of each graph.
+#' @param \dots plot other arguments
+#' @seealso create.smooth function to create the Smooth, Transpose to calculate the data transposition into trophic spectra, create.ETmain to create a list of table including the ET-Main table.
+#' @return The function returns the principal graphics of the global ET-Transpose routine: the Biomass Trophic Spectra, the Accessible Biomass Trophic Spectra and other graphics, notably the Catch Trophic Spectra.
+#' @import graphics
+#' @import utils
+#' @import grDevices
+#' @import stats
+#' @examples
+#' data(ecopath_guinee)
+#' plot(create.ETmain(ecopath_guinee),scale1=log)
+#' plot(create.ETmain(ecopath_guinee),scale1=log,scale3=log)
+#' @export
+
 plot.ETmain <-
 function(x,scale1=NULL,scale2=NULL,scale3=NULL,legend.cex=NULL,ask=interactive(),...){
 m<-x

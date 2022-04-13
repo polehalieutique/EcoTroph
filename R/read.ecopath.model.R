@@ -1,3 +1,16 @@
+#' @title  Input data import function (from an xml file)
+#' @usage read.ecopath.model(filename)
+#' @description  This function loads input data from an xml file created by the user, or exported from the EwE EcoTroph plug-in, or from a web service associated to a database populated with parameters of several EwE models.
+#' @param filename is the address of the file the user wants to import.
+#' @seealso check.table to control the reliability of the dataset.
+#' @return This function returns a data.frame containing all the column needed to run the EcoTroph R package.
+#' @importFrom XML xmlTreeParse
+#' @importFrom XML xmlRoot
+#' @importFrom XML xmlName
+#' @importFrom XML xmlSApply
+#' @importFrom XML xmlValue
+#' @export
+
 read.ecopath.model <-
 function(filename)
 {
@@ -27,13 +40,13 @@ ecopath<-data.frame(v$groupname,as.numeric(v$TL),as.numeric(v$B),as.numeric(v$PR
 
 names(ecopath)<-c("group_name","TL","biomass","prod","accessibility","OI")
 
-if (is.null(dim(catches_tmp2))) 
+if (is.null(dim(catches_tmp2)))
 {
 ecopath<-data.frame(ecopath,as.data.frame(catches_tmp2[1:length(rownames(ecopath))]))
 names(ecopath)<-c("group_name","TL","biomass","prod","accessibility","OI",paste("catch.",v$fleetname[-length(v$fleetname)],sep='')
 )
 }
-if (!is.null(dim(catches_tmp2))) 
+if (!is.null(dim(catches_tmp2)))
 {
 
 ecopath<-data.frame(ecopath,as.data.frame(catches_tmp2[1:length(rownames(ecopath)),]))

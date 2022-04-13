@@ -1,3 +1,24 @@
+#'  This function enables the creation of the principle graphics resulting from the create.ETdiagnosis function.
+#'  The function returns the principal plots of the global ET-Diagnosis routine: the graphics of the biomass, accessible biomass...rates for the different effort multipliers, the Biomass Trophic Spectra (BTS) for the different effort multipliers, the B/Bref(mE=1) and Y/Yref graphs for the main TL classes and the Catch Trophic Spectra (CTS) (global and per fleet).
+#'
+#' @param x is the list object returned by the create.ETdiagnosis function.
+#' @param scale is the scale parameter of the Biomass Trophic Spectra, can be log or by default the standard scale of results.
+#' @param maxrange is the maximum TL wanted for the x-axis. By default maxrange = 5.5.
+#' @param legend.cex defines the value of the cex for the legend.
+#' @param ask default value is interactive. Parameter used to enable the user to control the display of each graph.
+#' @param \dots plot other arguments
+#' @import graphics
+#' @import utils
+#' @import grDevices
+#' @import stats
+#'
+#' @examples
+#'data(ecopath_guinee)
+#'diagn.list<-create.ETdiagnosis(create.ETmain(ecopath_guinee),same.mE=TRUE)
+#'plot(diagn.list)
+
+#' @export
+
 plot.ETdiagnosis <-function(x,scale=NULL,maxrange=NULL,legend.cex=NULL,ask=interactive(),...){#,fleet=NULL,fix.mE=NULL
 if (is.null(legend.cex)) {legend.cex=0.8}
 
@@ -14,7 +35,7 @@ if(is.null(maxrange)) maxrange<-5.5
 #if(is.null(fix.mE)) fix.mE<-1
 
 split.nm=function(x){return(strsplit(x,'catch.')[[1]][2])}
-  
+
 fleets=names(diagn.list[[1]][['Catches']])
 Nam.fleet=sapply(fleets,split.nm)
 n.fleet=length(fleets)
@@ -31,7 +52,7 @@ mf=matrix(data=unlist(strsplit(names(diagn.list),'_')),ncol=n.fleet,nrow=length(
 mf=sort(unique(mf))
 
 #if(length(fleet)>n.fleet){print('too much fleets')}
-#if(is.null(fleet)){# on applique le même multiplicateur d'effort à toutes les flottilles
+#if(is.null(fleet)){# on applique le m?me multiplicateur d'effort ? toutes les flottilles
   for(i in 1:n.fleet){if(i==1){nam=mf}else{nam=paste(nam,'_',mf,sep='')}}
   ll=diagn.list[names(diagn.list) %in% nam]
   names(ll)=mf
@@ -46,7 +67,7 @@ mf=sort(unique(mf))
 #}
 mf=as.numeric(mf)
 opar=par(no.readonly=TRUE)
-  
+
 #par(mar=c(5,5,1,10))
 par(mar=c(5,3,1,9))
 
@@ -88,7 +109,7 @@ row.names(m2)=mf;colnames(m2)=c("TL_TOT_B","TL_TOT_B_acc","TL_Y")
 for(i in 1:length(mf)){
   xx=ll[[as.character(mf[i])]][['ET_Main_diagnose']]
   m2[i,]=c(xx$TL_TOT_B,xx$TL_TOT_B_acc,xx$TL_Y)
-} 
+}
 #x11()
 par(mar=c(5,4.5,1,9))
 plot(rownames(m2),m2[,"TL_TOT_B"],col=2,type='l',ylim=c(1,4),xlab="mE",ylab="TL",...)
@@ -106,7 +127,7 @@ if(n.fleet==1){
 #    TL_CATCH[[fleets[i]]]=rep(NA,length(mf))
 #    for(j in 1:length(mf)){
 #      xx=ll[[as.character(mf[j])]][['Catches']]
-#      TL_CATCH[[fleets[i]]][j] =sum(xx[[fleets[i]]][as.numeric(names(xx[[fleets[i]]]))>1]*TL_out[TL_out>1])/ sum(xx[[fleets[i]]][as.numeric(names(xx[[fleets[i]]]))>1],na.rm=T) 
+#      TL_CATCH[[fleets[i]]][j] =sum(xx[[fleets[i]]][as.numeric(names(xx[[fleets[i]]]))>1]*TL_out[TL_out>1])/ sum(xx[[fleets[i]]][as.numeric(names(xx[[fleets[i]]]))>1],na.rm=T)
 #  }
 #   lines(rownames(m2),TL_CATCH[[fleets[i]]],type='l',col=12+i)
 #  }
@@ -133,7 +154,7 @@ plot(rownames(m3),m3[,1],log=scale,col=1,type='l',bg='gray',axes=T,ylab="Biomass
 for (i in 2:length(colnames(m3)))
 lines(TL_out,m3[,i],col=i,type='l')
 legend(maxrange+0.2,ymax,legend = colnames(m3), bg = 'gray90',col=c(1:length(colnames(m3))),pch=1,xpd=NA,cex=legend.cex)
-  
+
 
 tl=seq(2.5,5,.5)
 round.tl=function(x,TL_out){dif=abs(as.numeric(TL_out)-x);names(dif)=TL_out;return(names(dif[dif==min(dif)[1]]))}
@@ -153,7 +174,7 @@ ymax=min(5,max(mm,na.rm=T))
 plot(colnames(mm),mm[1,],col=1,type='l',ylim=c(0,ymax),xlab="mE",ylab="B/Bref",...)
 for (i in 2:length(rownames(mm)))lines(colnames(mm),mm[i,],col=i,type='l')
 legend(max(mf)+.2,ymax,legend = rownames(mm), bg = 'gray90',col=c(1:length(rownames(mm))),pch=1,xpd=NA,cex=legend.cex)
-    
+
 
 refY=Ref$Catches.tot[names(Ref$Catches.tot)%in%tl.]
 my=data.frame(matrix(data=NA,ncol=6,nrow=length(mf)));row.names(my)=mf;colnames(my)=tl.
@@ -168,7 +189,7 @@ plot(row.names(my),my[,1],col=1,type='l',ylim=c(0,ymax),xlab="mE",ylab="Y/Yref p
 for (i in 2:length(colnames(my)))lines(row.names(my),my[,i],col=i,type='l')
 legend(max(mf)+.2,ymax,legend = colnames(my), bg = 'gray90',col=c(1:length(colnames(my))),pch=1,xpd=NA,cex=legend.cex)
 
- 
+
 m4=data.frame(matrix(data=NA,ncol=length(mf),nrow=length(TL_out)))
 colnames(m4)=mf;row.names(m4)=TL_out
 for(i in 1:length(mf)){m4[,i]=ll[[as.character(mf[i])]][['Catches.tot']]}
@@ -198,7 +219,7 @@ for (i in 1:(length(colnames(m6))-1))
 legend(maxrange+.2,ymax,legend = colnames(m3), bg = 'gray90',col=c(1:length(colnames(m6))),xpd=NA,pch=1,cex=legend.cex)
 }
 }
-  
+
 #m5=data.frame(matrix(data=NA,ncol=length(mf),nrow=length(TL_out)))
 #colnames(m5)=mf;row.names(m5)=TL_out
 #for(i in 1:length(mf)){m5[,i]=ll[[as.character(mf[i])]][['Prod_MF']]}

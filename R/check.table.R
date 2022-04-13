@@ -1,14 +1,21 @@
-check.table <- function (ecopath) 
+#'  convert.list2tab enables to convert the list object returned by the create.ETdiagnosis function into a list of data.frames. These data.frames contain calculated variables by TL class and combinations of effort multipliers.
+#' @param ecopath is the input table used in ET (possibly based on Ecopath data). The different variables are the group name, its trophic level, biomass, production, catches, omnivory index and accessibility (fraction of the group that can be catch assuming an infinite fishing effort).
+#' @examples
+#' data(ecopath_guinee)
+#' check.table(ecopath_guinee)
+#' @export
+
+check.table <- function (ecopath)
 {
-if (is.data.frame(ecopath) == FALSE) 
+if (is.data.frame(ecopath) == FALSE)
 ecopath <- as.data.frame(ecopath)
 names <- names(ecopath)
 wanted <- c("group_name", "TL", "biomass", "prod", "accessibility", "OI")
 verif <- is.na(match(wanted, names))
 pb <- paste(wanted[which(verif == TRUE)], collapse = " ")
-if (pb != "") 
+if (pb != "")
 cat(paste("The column(s) ", pb, " is(are) not present (if the column OI is not present, it's not an issue but the use of the OI smooth (smooth_type=3) won't be possible).\n"))
-if (length(grep("catch", names)) == 0) 
+if (length(grep("catch", names)) == 0)
 print("No fleet/catches are detected. Even if no catches are made (MPA or no data), a column with 0 value must be entered. The name of the column has to be written as 'catch.something'.")
 
 cat("\nCHECK OF THE NA VALUES, IF A MESSAGE APPEARS, PLEASE READ IT CAREFULLY AND FOLLOW THE INSTRUCTIONS. NO NA IS ACCEPTED AS INPUT DATA.\n\n")

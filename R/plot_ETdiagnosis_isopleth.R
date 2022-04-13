@@ -1,3 +1,22 @@
+#'  This function enables to plot the mixed impacts of changes in fishing effort for two fleets (or groups of fleets).
+#' @param x is the list object returned by the create.ETdiagnosis function.
+#' @param fleet1 is a character vector of fleets for which fishing efforts are equally changed.
+#' @param fleet2 is a second character vector of fleets for which fishing efforts are equally changed. Fishing efforts remain unchanged for fleets not assigned in fleet1 or fleet2. If fleet2 is NULL, all fleets not assigned in fleet1 are assigned in fleet2. If the argument 'fleet.of.interest' has been assigned in the function create.ETdiagnosis, fleet1=fleet.of.interest and thus fleet2 is composed of the remaining fleet(s) (not assigned in fleet.of.interest).
+#' @param var is a character vector of plotted variables (TOT_biomass,TOT_biomass_acc,Y,Y_fleet1,Y_fleet2,TL_TOT_biomass,TL_TOT_biomass_acc,TL_Y,TL_Y_fleet1,TL_Y_fleet2).All the variables are plotted by default.
+#' @param n.level is a numeric string, specifying the number of plotted isopleth areas (7 is the default value).
+#' @param relative is a logical string (by default relative=F), specifying if the variables have to be plotted in absolute or relative values (in comparison with reference state, Mul_eff=1). Note that if relative=TRUE, mean trophic level in biomass or catches (TL_TOT_biomass,TL_Y,...) are not plotted.
+#' @param name.fleet1 is a character string used to implement x-axis name. By default name.fleet1='fleet 1'.
+#' @param name.fleet2 is a character string used to implement y-axis name. By default name.fleet2='fleet 2'. If the argument fleet.of.interest has been assigned in the function create.ETdiagnosis, name.fleet1 = 'fleet of interest' and name.fleet2 = 'other fleets'.
+#' @param color is a vector of colors, the length of this vector should be equal to the value of levels. By default, color=rainbow(n=levels).
+#' @param ask default value is interactive. Parameter used to enable the user to control the display of each graph.
+#' @details Fleets' names used in the arguments 'fleet1' and 'fleet2' are the catch column names of ecopath input dataframe (e.g. 'catch.1' or 'catch.ind').
+#' @examples
+#' data(ecopath_guinee)
+#' diagn.list=create.ETdiagnosis(create.ETmain(ecopath_guinee))
+#' \donttest{plot_ETdiagnosis_isopleth(diagn.list,fleet1='catch.1',fleet2='catch.2')}
+#' \donttest{plot_ETdiagnosis_isopleth(diagn.list,fleet1='catch.1',fleet2='catch.2',relative=TRUE)}
+#' @export
+
 plot_ETdiagnosis_isopleth=function(x,fleet1=NULL,fleet2=NULL,var=NULL,n.level=NULL,relative=NULL,name.fleet1=NULL,name.fleet2=NULL,color=NULL,ask=interactive()){
  diagn.list<-x
 par(ask=ask)
@@ -17,7 +36,7 @@ par(ask=ask)
   if(is.null(n.level)){n.level=7}
   if(is.null(color)) color=rainbow((n.level-1))#rev(gray(seq(0,1,1/(levels-1))))
   # find each combination of diagnlist to conserve
-  
+
   # fleets
   fleets=names(diagn.list[[1]][['Catches']]); n.fleet=length(fleets); names(fleets)=1:n.fleet
   if(is.null(fleet.of.interest)){
@@ -29,7 +48,7 @@ par(ask=ask)
     neutral.fleet=NULL
   }
   FL=list(fleet1=fleet1,fleet2=fleet2)
-  
+
   # Mul_eff
   mf=matrix(data=unlist(strsplit(names(diagn.list),'_')),ncol=n.fleet,nrow=length(diagn.list),byrow=T)
   for(i in 1:n.fleet){if(i==1){m.=mf[,1]}else{m.=c(m.,mf[,1])}}
@@ -53,7 +72,7 @@ par(ask=ask)
   #nll=names(ll)
   #for(n in 1:length(nll)){names(ll[n])=as.character(N[N$nam==nll[n],'nl.'])}
   names(ll)<-N[match(N$nam,names(ll)),]$nl.
-  
+
   # create a matrix for each variable and then plot an ispoleth
   x=mf;y=mf
   nmf1=as.numeric(names(mf[mf==1]))
@@ -65,7 +84,7 @@ par(ask=ask)
   #  v='Y'
     #v=var[11];v
     M=matrix(data=NA,ncol=length(mf),nrow=length(mf))
-    
+
     if(!v%in%c('Y_fleet1','Y_fleet2','R_Y_fleet1','R_Y_fleet2','TL_Y_fleet1','TL_Y_fleet2')){
       for(i in 1:length(mf)){# fleet1
         for(j in 1:length(mf)){# fleet2
@@ -105,13 +124,13 @@ par(ask=ask)
             M[i,j]=m.
           }
         }
-      }  
+      }
     }
-    
+
     # save matrix
     row.names(M)=mf;colnames(M)=mf
     var.mat[[v]]=M
-  
+
     par(mar=c(5, 4.5, 4, 1))
    #x11()
     if(is.null(fleet.of.interest)){v.=v}else{if(!v%in%c('Y_fleet1','Y_fleet2','R_Y_fleet1','R_Y_fleet2','TL_Y_fleet1','TL_Y_fleet2')){v.=v}else{

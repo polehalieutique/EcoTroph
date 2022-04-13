@@ -1,4 +1,6 @@
 #'  E_MSY_0.1 computes two indices of exploitation: Emsy or Fmsy (maximum sustainable yield), and E0.1 or F0.1 ("start" of full exploitation) per TL class.
+#' @usage E_MSY_0.1(data, Mul_eff=NULL, B.Input=NULL, Beta=NULL,TopD=NULL,
+#' @usage  FormD=NULL, TLpred=NULL, maxTL=NULL)
 #' @param data is the list object returned by the create.ETmain function.
 #' @param Mul_eff is a parameter of the create.ETdiagnosis function. It is a vector of fishing effort multipliers that the user wants to test. Mul_eff must contain the value 1 (reference state). By default, the function simulates a range of fishing effort multipliers from 0 to 5 for each fleet.
 #' @param B.Input is a parameter of the create.ETdiagnosis function. It is a logical argument (default=F), if TRUE the "Biomass input control" equation is accounted for in EcoTroph equations.
@@ -7,6 +9,7 @@
 #' @param FormD is a parameter of the create.ETdiagnosis function. It is a shape parameter varying between 0 and 1. It defines the functional relationship between prey and predators. The value 1 refers to a situation where predators abundance has a linear effect on the speed of the flow of their preys. The user can specify a numeric value, which is applied to each trophic level, or a numeric vector (of the same length as TL classes), i.e. a value for each TL (default=0.5).
 #' @param TLpred is a parameter of the create.ETdiagnosis function. It is the trophic level that the user considers to be the "predator" trophic classes start. The default value is 3.5.
 #' @param maxTL is a numeric string indicating the maximum TL for which indices are computed.
+#' @return The E_MSY_0.1 function returns a data.frame containing Fmsy, Emsy, F0.1 and E0.1 per TL class.
 #' @details For any TL class, if E0.1 and/or Emsy value(s) is(are) equal to the maximum effort multiplier tested (max(Mul_eff)), then E/F0.1 and/or E/Fmsy are set equal to NA.
 
 #' @examples

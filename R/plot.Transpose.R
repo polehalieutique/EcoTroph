@@ -1,6 +1,21 @@
+#'  This function returns the two principal plots of the Transpose function : a plot by group and the associated Trophic Spectra (CTS, BTS...).
+#' @param x is the table returned by the Transpose function.
+#' @param title defines the title of the graph.
+#' @param scale defines the scale of the y-axis: can be log or not.
+#' @param legend.cex defines the value of the cex for the legend.
+#' @param \dots plot other arguments
+#' @seealso create.smooth function to create the Smooth, plot.smooth to plot the smooth function, Transpose to calculate the data transposition into trophic spectra.
+#'
+#' @examples
+#' data(ecopath_guinee)
+#' smoothed<-create.smooth(ecopath_guinee)
+#' plot(Transpose(smoothed,ecopath_guinee,"biomass"),scale=log)
+#' plot(Transpose(smoothed,ecopath_guinee,"catch.1"),title="Small Scale Fishery Catch")
+#' @export
+
 plot.Transpose <-
 function(x,title=NULL,scale=NULL,legend.cex=NULL,...)    #the scale parameter can be log or not for the y axis
-{                                                               
+{
 tab_Trans<-x
 if(missing(title))
 cat("title is missing\n")
@@ -24,14 +39,14 @@ plot(rownames(m),apply(m,1,sum),log=scale,col=2,type='l',axes=F,xlab="TL",main=p
 
 m_cum <- apply(m,1,cumsum)
 
-for(i in length(rownames(m_cum)):1) 
+for(i in length(rownames(m_cum)):1)
 {
 polygon(c(2,as.numeric(colnames(m_cum)),5),c(y_min,m_cum[i,],y_min),col=i,xlim=c(2,5),border='NA')
 polygon(c(2,2,5,5),c(min(m_cum[i,]),y_min,y_min,min(m_cum[i,])),col='white',border='NA')
 }
 axis(4,...)
 legend(5.7,y_max,legend = colnames(m), bg = 'gray90',col=seq(1:ncol(m)),pch=1,xpd=NA,cex=legend.cex)
-   
+
 plot(rownames(m),apply(m,1,sum),log=scale,col=2,type='l',bg='gray',axes=F,main=paste(title,": trophic spectra"),ylab=NA,xlab="TL",ylim=c(y_min,y_max),xlim=c(2,5),...)
 axis(1,...)
 axis(4,...)
@@ -41,7 +56,7 @@ par(opar)
 
 else
 {
-scale <- 'y'   
+scale <- 'y'
 
 
 y_max<-max(apply(m,1,sum))
@@ -54,17 +69,17 @@ plot(rownames(m),apply(m,1,sum),log=scale,col=2,type='l',axes=F,xlab="TL",main=p
 
 m_cum <- apply(m,1,cumsum)
 
-for(i in length(rownames(m_cum)):1) 
+for(i in length(rownames(m_cum)):1)
 {
 polygon(c(2,as.numeric(colnames(m_cum)),5),c(y_min,m_cum[i,],y_min),col=i,xlim=c(2,5),border='NA')
 polygon(c(2,2,5,5),c(min(m_cum[i,]),y_min,y_min,min(m_cum[i,])),col='white',border='NA')
 }
 axis(4,...)
 legend(5.7,y_max,legend = colnames(m), bg = 'gray90',col=seq(1:ncol(m)),pch=1,xpd=NA,cex=legend.cex)
- 
+
 plot(rownames(m),apply(m,1,sum),log=scale,col=2,type='l',bg='gray',axes=F,main=paste(title,": trophic spectra"),ylab=NA,xlab="TL",ylim=c(y_min,y_max),xlim=c(2,5),...)
 axis(1,...)
 axis(4,...)
-par(opar)  
+par(opar)
 }
 }
